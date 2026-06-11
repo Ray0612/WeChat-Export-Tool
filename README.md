@@ -11,7 +11,14 @@
 
 ## 使用
 
-从 [Releases](https://github.com/Ray0612/WeChat-Export-Tool/releases) 下载最新版本，运行 `WeChatExport.exe`。
+从 [Releases](https://github.com/Ray0612/WeChat-Export-Tool/releases) 下载最新版本，解压后：
+
+1. 双击 `启动工具.bat` 或 `WeChatExport.exe`
+2. 点击 **"🔑 获取密钥"** — 会提示关闭微信，关掉后它会自动捕获解密密钥
+3. 密钥获取成功后，点击 **"🗄️ 连接数据库"**
+4. 连接成功后再点 **"📤 浏览会话"** — 即可查看所有聊天记录
+
+> 详细操作步骤见 [`WeChatExport/用户手册.md`](https://github.com/Ray0612/WeChat-Export-Tool/releases/download/v1.0.0/WXexport-tool-v1.0.zip)（含在压缩包内）
 
 ### 源码运行
 
