@@ -18,13 +18,13 @@
 3. 密钥获取成功后，点击 **"🗄️ 连接数据库"**
 4. 连接成功后再点 **"📤 浏览会话"** — 即可查看所有聊天记录
 
-> 详细操作步骤见[使用教程]()
+> 详细操作步骤见[使用教程（制作中...）]()
 
 ### 源码运行
 
 ```bash
 pip install -r requirements.txt
-python run_gui.py
+python gui/app_v3.py
 ```
 
 ## 构建
@@ -36,8 +36,8 @@ python build_dist.py
 ## 技术栈
 
 - Python 3.13 — 后端解密与导出
-- Electron — GUI 界面
-- WCDB — 微信数据库解密
+- Python tkinter — GUI 界面
+- Electron — WCDB — 微信数据库解密
 
 ## 许可证
 
@@ -47,6 +47,7 @@ GPL v3
 
 - 研究仓库: [WeChat-v4-export-research](https://github.com/Ray0612/WeChat-v4-export-research)
 - 国内的朋友可以访问我的博客网站使用[github高速下载工具](https://blog.ray2.asia/tools/download-relay/)，将这个(release)网址复制进来高速下载 [Releases v1.1](https://github.com/Ray0612/WeChat-Export-Tool/releases)
+- 欢迎各位提issue和PR
 
 ## ToDoList
 
@@ -67,3 +68,9 @@ GPL v3
 - 支持导出文字聊天记录
 - 支持以txt和json格式导出
 - 支持搜索联系人指定会话导出
+
+## 声明
+
+- 本项目仅供学习、研究和实验用途，用于生产环境存在较大风险，请谨慎评估。请勿用于非法用途，后果自负。
+- 所有程序都在您的本地运行，请您放心隐私问题。
+- 请您了解并严格遵守[针对违规获取及利用微信终端用户数据行为的打击公告](https://mp.weixin.qq.com/s/A6h4ZLTE2EPrY7kJ5fHE2g)
