@@ -16,8 +16,8 @@ from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-DB_PATH = r"D:\储存信息\xwechat_files\wxid_caccoealsdbj12_e8c8\db_storage\message\message_0.db"
-CONFIG_DIR = r"D:\储存信息\xwechat_files\wxid_caccoealsdbj12_e8c8\config"
+DB_PATH = os.environ.get('WX_DB_PATH', r"D:\储存信息\xwechat_files\wxid_caccoealsdbj12_e8c8\db_storage\message\message_0.db")
+CONFIG_DIR = os.environ.get('WX_CONFIG_DIR', r"D:\储存信息\xwechat_files\wxid_caccoealsdbj12_e8c8\config")
 
 def scan_config():
     """扫描配置文件，寻找密钥材料"""
