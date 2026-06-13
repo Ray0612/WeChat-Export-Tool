@@ -4,6 +4,13 @@ import os, sys, shutil, subprocess, platform
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DIST = os.path.join(ROOT, 'dist', 'WeChatExport')
+
+NODE_EXE = os.environ.get('NODE_EXE', r'D:\Program Files\nodejs\node.exe')
+WEFLOW_DIR = os.environ.get('WEFLOW_DIR', r'C:\Users\OK\AppData\Local\Programs\WeFlow')
+WCDB_DLL_DIR = os.environ.get('WCDB_DLL_DIR', os.path.join(WEFLOW_DIR, 'resources', 'resources', 'wcdb', 'win32', 'x64'))
+KEY_DLL_DIR = os.environ.get('KEY_DLL_DIR', os.path.join(WEFLOW_DIR, 'resources', 'resources', 'key', 'win32', 'x64'))
+VC_RUNTIME_DIR = os.environ.get('VC_RUNTIME_DIR', WEFLOW_DIR)
+
 print('='*50)
 print('构建全量发布包')
 print('='*50)
@@ -31,9 +38,8 @@ os.makedirs(os.path.join(DIST, 'dll'), exist_ok=True)
 os.makedirs(os.path.join(DIST, 'runtime'), exist_ok=True)
 
 # Node.js 运行时
-NODE_SRC = r'D:\Program Files\nodejs\node.exe'
-if os.path.exists(NODE_SRC):
-    shutil.copy(NODE_SRC, os.path.join(DIST, 'runtime', 'node.exe'))
+if os.path.exists(NODE_EXE):
+    shutil.copy(NODE_EXE, os.path.join(DIST, 'runtime', 'node.exe'))
     print('  [OK] node.exe')
 
 # Node.js 依赖
@@ -59,24 +65,22 @@ if os.path.exists(KOFI_NATIVE):
     print('  [OK] @koromix/koffi-win32-x64')
 
 # WCDB DLLs
-WCDB_SRC = r'C:\Users\OK\AppData\Local\Programs\WeFlow\resources\resources\wcdb\win32\x64'
 for f in ['WCDB.dll', 'wcdb_api.dll', 'SDL2.dll']:
-    src = os.path.join(WCDB_SRC, f)
+    src = os.path.join(WCDB_DLL_DIR, f)
     if os.path.exists(src):
         shutil.copy(src, os.path.join(DIST, 'dll'))
         print(f'  [OK] {f}')
 
 # wx_key.dll
-KEY_SRC = r'C:\Users\OK\AppData\Local\Programs\WeFlow\resources\resources\key\win32\x64'
-for f in os.listdir(KEY_SRC):
-    if f.endswith('.dll'):
-        shutil.copy(os.path.join(KEY_SRC, f), os.path.join(DIST, 'dll'))
-        print(f'  [OK] {f}')
+if os.path.exists(KEY_DLL_DIR):
+    for f in os.listdir(KEY_DLL_DIR):
+        if f.endswith('.dll'):
+            shutil.copy(os.path.join(KEY_DLL_DIR, f), os.path.join(DIST, 'dll'))
+            print(f'  [OK] {f}')
 
 # VC++ 运行时 DLLs
-RUNTIME_SRC = r'C:\Users\OK\AppData\Local\Programs\WeFlow'
 for f in ['msvcp140.dll', 'msvcp140_1.dll', 'vcruntime140.dll', 'vcruntime140_1.dll']:
-    src = os.path.join(RUNTIME_SRC, f)
+    src = os.path.join(VC_RUNTIME_DIR, f)
     if os.path.exists(src):
         shutil.copy(src, os.path.join(DIST, 'runtime'))
         print(f'  [OK] {f}')
