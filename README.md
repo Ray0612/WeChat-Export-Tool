@@ -47,3 +47,10 @@ GPL v3
 
 - 研究仓库: [WeChat-v4-export-research](https://github.com/Ray0612/WeChat-v4-export-research)
 - 国内的朋友可以访问我的博客网站使用[github高速下载工具](https://blog.ray2.asia/tools/download-relay/)，将这个(release)网址复制进来高速下载 [Releases v1.0.0](https://github.com/Ray0612/WeChat-Export-Tool/releases)
+
+## ToDoList
+
+- 现在正在着手开发QQ聊天记录导出的开源工具,为之后充实语料库做基础,后续会把两个工具的仓库合并
+- v1.1 支持多种格式的导出
+- v1.2 支持多种类型的消息的导出
+- v1.3 更美观的gui,更轻量的release
