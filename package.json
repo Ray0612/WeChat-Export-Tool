@@ -1,15 +1,8 @@
 {
-  "name": "wechat_v4_export_research",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "name": "wechat-export-tool",
+  "version": "1.1.0",
+  "description": "微信聊天记录导出工具",
+  "private": true,
   "dependencies": {
     "electron": "^42.4.0"
   }
