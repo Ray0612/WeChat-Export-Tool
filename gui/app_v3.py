@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""微信导出工具 v1.0 — Python + Electron + WCDB"""
+"""微信导出工具 v1.1 — Python + Electron + WCDB"""
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import os, sys, threading, time, datetime, json, ctypes, shutil
@@ -31,8 +31,6 @@ def find_xwechat_dirs():
     """扫描常见位置找 xwechat_files 目录"""
     candidates = [
         os.path.join(os.environ.get('USERPROFILE', 'C:'), 'Documents', 'xwechat_files'),
-        'D:\\wxxinxi\\xwechat_files',
-        'D:\\储存信息\\xwechat_files',
     ]
     for d in candidates:
         if os.path.isdir(d):
@@ -45,7 +43,7 @@ def find_xwechat_dirs():
 class App:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("微信导出工具 v1.0")
+        self.root.title("微信导出工具 v1.1")
         self.root.geometry("1100x750")
         self._set_icon()
         self.key = None
@@ -89,7 +87,7 @@ class App:
         f = ttk.Frame(self.root, padding=40)
         f.pack(fill=tk.BOTH, expand=True)
         ttk.Label(f, text="微信导出工具", font=("", 20)).pack()
-        ttk.Label(f, text="v1.0 — Python + Electron + WCDB", font=("", 10)).pack(pady=(0, 20))
+        ttk.Label(f, text="v1.1 — Python + Electron + WCDB", font=("", 10)).pack(pady=(0, 20))
 
         dir_f = ttk.LabelFrame(f, text="微信数据目录", padding=10)
         dir_f.pack(fill=tk.X, pady=10)
@@ -337,7 +335,7 @@ class App:
             count = 0
             for m in rows:
                 lt = int(m.get('local_type',0))
-                # v1.0 只显示文字消息 (1=文本, 244813135921=ZSTD压缩文本)
+                # v1.1 只显示文字消息 (1=文本, 244813135921=ZSTD压缩文本)
                 if lt != 1 and lt != 244813135921: continue
                 c = m.get('message_content','') or ''
                 ts = m.get('create_time','')
@@ -367,17 +365,24 @@ class App:
                 return
             if not rows:
                 messagebox.showinfo("提示", "该会话没有消息数据"); return
-            # v1.0 只导文字消息
             rows = [m for m in rows if int(m.get('local_type',0)) in (1, 244813135921)]
+            if not rows:
+                messagebox.showinfo("提示", "该会话没有文字消息"); return
             senders = list(set(m.get('sender_username','') for m in rows if m.get('sender_username','')))
             if wxid not in senders: senders.append(wxid)
             nm = {}
             if senders:
                 try: nm = self.wcdb.get_display_names(senders)
                 except: pass
+            for m in rows:
+                sr = m.get('sender_username','')
+                if sr in nm: m['sender_username'] = nm[sr]
+                if sr == MY: m['is_mine'] = 1
+
+            ext_map = {'html':'.html','csv':'.csv','xlsx':'.xlsx','pdf':'.pdf','txt':'.txt','json':'.json'}
             path = filedialog.asksaveasfilename(
-                title="导出聊天记录", defaultextension=f".{fmt}",
-                filetypes=[(fmt.upper(), f"*.{fmt}"), ("所有文件", "*.*")]
+                title="导出聊天记录", defaultextension=ext_map.get(fmt,'.'+fmt),
+                filetypes=[(fmt.upper(), '*'+ext_map.get(fmt,'.'+fmt)), ("所有文件", "*.*")]
             )
             if not path: return
             try:
@@ -385,23 +390,52 @@ class App:
                     with open(path, 'w', encoding='utf-8') as f:
                         for m in rows:
                             c = m.get('message_content','') or ''
-                            ts = m.get('create_time','')
+                            ts_raw = m.get('create_time','')
                             sr = m.get('sender_username','')
-                            name = nm.get(sr, sr)
-                            if sr == MY: name = '我'
+                            name = '我' if m.get('is_mine') else sr
+                            ts = datetime.datetime.fromtimestamp(int(ts_raw)).strftime('%m-%d %H:%M') if ts_raw.isdigit() else ts_raw
                             f.write(f"[{ts}] {name}\n{c}\n\n")
                 elif fmt == 'json':
+                    clean = []
+                    for m in rows:
+                        clean.append({
+                            'time': datetime.datetime.fromtimestamp(int(m.get('create_time','0'))).strftime('%Y-%m-%d %H:%M:%S') if m.get('create_time','0').isdigit() else m.get('create_time',''),
+                            'sender': m.get('sender_username',''),
+                            'content': m.get('message_content',''),
+                            'is_mine': m.get('is_mine',0),
+                        })
                     with open(path, 'w', encoding='utf-8') as f:
-                        json.dump(rows, f, ensure_ascii=False, indent=2)
+                        json.dump(clean, f, ensure_ascii=False, indent=2)
+                else:
+                    import importlib.util
+                    mod_map = {'html':'html','csv':'csv','xlsx':'excel','pdf':'pdf'}
+                    mn = mod_map.get(fmt)
+                    exp_path = os.path.join(BASE, 'exporters', mn+'_exporter.py')
+                    spec = importlib.util.spec_from_file_location('qq_'+mn+'_exp', exp_path)
+                    mod = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(mod)
+                    display_title = nm.get(wxid, wxid) + '聊天记录'
+                    mod.export(rows, path, my_name='我', title=display_title)
                 messagebox.showinfo("完成", f"已导出 {len(rows)} 条\n{path}")
             except Exception as e:
                 messagebox.showerror("错误", str(e))
 
-        ttk.Button(top, text="导出TXT", command=lambda: do_export('txt')).pack(side=tk.LEFT, padx=2)
-        ttk.Button(top, text="导出JSON", command=lambda: do_export('json')).pack(side=tk.LEFT, padx=2)
+        mb = ttk.Menubutton(top, text="导出 ▼", direction='below')
+        mb_menu = tk.Menu(mb, tearoff=0)
+        for label, f in [("HTML 网页",'html'),("CSV 表格",'csv'),("Excel 电子表格",'xlsx'),
+                           ("PDF 文档",'pdf'),("TXT 文本",'txt'),("JSON 数据",'json')]:
+            mb_menu.add_command(label=label, command=lambda ff=f: do_export(ff))
+        mb.config(menu=mb_menu); mb.pack(side=tk.LEFT, padx=2)
         do_load()
 
+    def _cleanup(self):
+        try:
+            if self.wcdb:
+                self.wcdb.stop()
+        except: pass
+
     def run(self):
+        self.root.protocol("WM_DELETE_WINDOW", lambda: (self._cleanup(), self.root.destroy()))
         self.root.mainloop()
 
 
