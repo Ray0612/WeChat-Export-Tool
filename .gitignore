@@ -2,21 +2,17 @@
 __pycache__/
 *.pyc
 *.pyo
-dist/
 build/
 *.egg-info/
-
 # Node
 node_modules/
-
 # IDE
 .vscode/
 .idea/
-
 # OS
 .DS_Store
 Thumbs.db
 
 # Build output
-WeChatExport/
 dist/
+WeChatExport/
