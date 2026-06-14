@@ -5,15 +5,9 @@ const fs = require('fs');
 const { execFileSync } = require('child_process');
 
 const SELF = __dirname;
-const LOCAL_APP_DATA = process.env.LOCALAPPDATA || '';
-const PROGRAM_FILES = process.env['ProgramFiles'] || 'C:\\Program Files';
-const PROGRAM_FILES_X86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
 const DLL_CANDIDATES = [
     path.join(SELF, '..', 'dll', 'wx_key.dll'),
     path.join(SELF, '..', '..', '..', 'research', 'tools', 'wx_key', 'build', 'Release', 'wx_key.dll'),
-    path.join(LOCAL_APP_DATA, 'Programs', 'WeFlow', 'resources', 'resources', 'key', 'win32', 'x64', 'wx_key.dll'),
-    path.join(PROGRAM_FILES, 'Tencent', 'WeFlow', 'resources', 'resources', 'key', 'win32', 'x64', 'wx_key.dll'),
-    path.join(PROGRAM_FILES_X86, 'Tencent', 'WeFlow', 'resources', 'resources', 'key', 'win32', 'x64', 'wx_key.dll'),
 ];
 const OUT = path.join(process.env.USERPROFILE || SELF, 'Desktop', 'wx_export');
 const STATUS_FILE = path.join(OUT, 'key_status.txt');
