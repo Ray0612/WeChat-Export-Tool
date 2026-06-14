@@ -18,13 +18,13 @@
 3. 密钥获取成功后，点击 **"🗄️ 连接数据库"**
 4. 连接成功后再点 **"📤 浏览会话"** — 即可查看所有聊天记录
 
-> 详细操作步骤见[使用教程]()
+> 详细操作步骤见[使用教程（制作中...）]()
 
 ### 源码运行
 
 ```bash
 pip install -r requirements.txt
-python run_gui.py
+python gui/app_v3.py
 ```
 
 ## 构建
@@ -36,8 +36,8 @@ python build_dist.py
 ## 技术栈
 
 - Python 3.13 — 后端解密与导出
-- Electron — GUI 界面
-- WCDB — 微信数据库解密
+- Python tkinter — GUI 界面
+- Electron — WCDB — 微信数据库解密
 
 ## 许可证
 
