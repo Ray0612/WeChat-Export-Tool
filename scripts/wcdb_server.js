@@ -15,8 +15,6 @@ const DATA_DIR = process.argv[4] || '';     // 微信数据目录（可选）
 const COMMON_DIRS = DATA_DIR ? [DATA_DIR] : [
     path.join(process.env.USERPROFILE || 'C:', 'Documents', 'xwechat_files'),
     path.join(process.env.USERPROFILE || 'C:', 'Documents', 'WeChat Files'),
-    'D:\\wxxinxi\\xwechat_files',
-    'D:\\储存信息\\xwechat_files',
 ];
 
 if (!key || key.length !== 64) { console.error('BAD_KEY'); process.exit(1); }
