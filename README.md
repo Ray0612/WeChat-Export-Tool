@@ -48,7 +48,7 @@ GPL v3
 ## 相关
 
 - 研究仓库: [WeChat-v4-export-research](https://github.com/Ray0612/WeChat-v4-export-research)
-- 国内的朋友可以访问我的博客网站使用[github高速下载工具](https://blog.ray2.asia/tools/download-relay/)，将这个(release)网址复制进来高速下载 [Releases v1.1](https://github.com/Ray0612/WeChat-Export-Tool/releases)
+- 国内的朋友可以访问我的博客网站使用[github高速下载工具](https://blog.ray2.asia/tools/download-relay/)，将这个(release)网址复制进来高速下载 [Releases v1.2.0](https://github.com/Ray0612/WeChat-Export-Tool/releases)
 
 ## ToDoList
 
