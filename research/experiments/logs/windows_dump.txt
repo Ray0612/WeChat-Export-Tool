@@ -1,0 +1,9 @@
+FG: 0x200fea title=[⠐ Ensure tool runs correctly]
+  0x200fea [⠐ Ensure tool runs correctly] (4,77,809,695) 805x618
+  0x5a0e2e [大瑞] (635,0,1286,758) 651x758
+  0x30784 [设置] (0,7,1280,759) 1280x752
+  0xb0798 [设置] (-7,-7,1286,758) 1293x765
+  0x104dc [Nahimic] (0,39,1280,759) 1280x720
+  0x1048e [Nahimic] (-7,-7,1286,758) 1293x765
+  0x300ae [Windows 输入体验] (0,0,1280,800) 1280x800
+  0x10142 [Program Manager] (0,0,1280,800) 1280x800

@@ -6,7 +6,12 @@ const fs = require('fs');
 const fzstd = require('fzstd');
 
 const SELF = __dirname;
-const DLL = path.join(SELF, '..', 'dll');   // DLL 在上级 dll/ 目录
+// DLL 搜索路径: 源码开发时用 APP/WeChatExport/dll, 打包后用 ../dll
+const DLL_CANDIDATES = [
+    path.join(SELF, '..', 'APP', 'WeChatExport', 'dll'),
+    path.join(SELF, '..', 'dll'),
+];
+let DLL = DLL_CANDIDATES.find(d => fs.existsSync(path.join(d, 'WCDB.dll'))) || DLL_CANDIDATES[0];
 
 const key = process.argv[2];
 const port = process.argv[3];
@@ -60,6 +65,18 @@ for (const dir of COMMON_DIRS) {
 }
 if (!sessionDb) { console.error('DB_NOT_FOUND'); process.exit(1); }
 
+// v1.2: 计算账号目录 (往上走到 wxid_* 目录)
+let accountDir = '';
+if (sessionDb) {
+    let d = path.dirname(sessionDb);
+    while (d && d !== path.dirname(d)) {
+        if (path.basename(d).startsWith('wxid_')) {
+            accountDir = d; break;
+        }
+        d = path.dirname(d);
+    }
+}
+
 // ── 绑定函数 ──
 const oa = lib.func('int32 wcdb_open_account(const char* path, const char* key, _Out_ int64* h)');
 const ca = lib.func('int32 wcdb_close_account(int64 h)');
@@ -68,6 +85,11 @@ const gm = lib.func('int32 wcdb_get_messages(int64 h, const char* username, int3
 const gc = lib.func('int32 wcdb_get_message_count(int64 h, const char* username, _Out_ int32* out)');
 const dn = lib.func('int32 wcdb_get_display_names(int64 h, const char* json, _Out_ void** out)');
 const fs2 = lib.func('void wcdb_free_string(void* p)');
+
+// v1.2: 媒体相关 API
+const sm = lib.func('int32 wcdb_scan_media_stream(int64 h, const char* sessionIdsJson, int32 mediaType, int64 begin, int64 end, int32 limit, int32 offset, _Out_ void** outJson, _Out_ int32* outHasMore)');
+const ri = lib.func('int32 wcdb_resolve_image_hardlink(int64 h, const char* md5, const char* accountDir, _Out_ void** outJson)');
+const rib = lib.func('int32 wcdb_resolve_image_hardlink_batch(int64 h, const char* requestsJson, _Out_ void** outJson)');
 
 const h = [BigInt(0)];
 if (oa(sessionDb, key, h) !== 0) { console.error('OPEN_FAIL'); process.exit(1); }
@@ -131,6 +153,44 @@ http.createServer((req, res) => {
             });
             return;
         }
+
+        // v1.2: 媒体扫描
+        if (a === 'scan_media') {
+            const outJson = [null]; const outHasMore = [0];
+            sm(h[0], JSON.stringify([p[1]]), parseInt(p[2]||'1'), parseInt(p[3]||'0'), parseInt(p[4]||'4102444800'), parseInt(p[5]||'200'), parseInt(p[6]||'0'), outJson, outHasMore);
+            const r = {messages: outJson[0] ? JSON.parse(koffi.decode(outJson[0], 'char', -1)) : [], has_more: outHasMore[0] !== 0};
+            if (outJson[0]) fs2(outJson[0]);
+            res.end(JSON.stringify(r)); return;
+        }
+
+        // v1.2: 图片路径解析
+        if (a === 'resolve_image') {
+            const out = [null];
+            const rv = ri(h[0], p[1], accountDir, out);
+            const raw = out[0] ? koffi.decode(out[0], 'char', -1) : '{}';
+            if (out[0]) fs2(out[0]);
+            res.end(raw); return;
+        }
+
+        // v1.2: 批量图片路径解析
+        if (a === 'resolve_image_batch') {
+            let body = '';
+            req.on('data', c => body += c);
+            req.on('end', () => {
+                const out = [null]; rib(h[0], body || '[]', out);
+                res.end(out[0] ? koffi.decode(out[0], 'char', -1) : '[]');
+                if (out[0]) fs2(out[0]);
+            }); return;
+        }
+
         res.end('[]');
     } catch(e) { res.end(JSON.stringify({error: e.message})); }
 }).listen(port, () => process.stdout.write('READY\n'));
+
+// 优雅退出: 父进程断开时自动退出
+process.on('uncaughtException', (err) => {
+    if (err.code === 'EPIPE' || err.message.includes('EPIPE')) return;
+    console.error('UNCAUGHT:', err.message);
+});
+process.stdout.on('error', () => process.exit(0));
+process.stderr.on('error', () => {});

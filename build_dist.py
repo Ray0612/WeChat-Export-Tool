@@ -21,6 +21,19 @@ subprocess.run([
     '--paths', ROOT,
     '--paths', os.path.join(ROOT, 'scripts'),
     '--hidden-import', 'wcdb_server',
+    '--hidden-import', 'media_resolver',
+    '--hidden-import', 'image_decoder',
+    '--hidden-import', 'packed_info_parser',
+    '--hidden-import', 'logger',
+    '--hidden-import', 'html_exporter',
+    '--hidden-import', 'pdf_exporter',
+    '--hidden-import', 'csv_exporter',
+    '--hidden-import', 'excel_exporter',
+    '--hidden-import', 'Crypto.Cipher.AES',
+    '--hidden-import', 'fpdf',
+    '--hidden-import', 'fpdf.fonts',
+    '--hidden-import', 'openpyxl',
+    '--hidden-import', 'PIL',
     '--collect-all', 'wcdb_server',
     os.path.join(ROOT, 'gui', 'app_v3.py')
 ], cwd=ROOT, check=True)
@@ -46,9 +59,25 @@ for mod in ['koffi', 'fzstd']:
         print(f'  [OK] node_modules/{mod}')
 
 # scripts
-for f in ['wcdb_server.js', 'wcdb_server.py', 'get_key_wx.py', 'get_key.js']:
+for f in ['wcdb_server.js', 'wcdb_server.py', 'get_key.js', 'decrypt_image.js']:
     shutil.copy(os.path.join(ROOT, 'scripts', f), os.path.join(DIST, 'scripts'))
 print('  [OK] scripts')
+
+# exporters
+exporters_src = os.path.join(ROOT, 'exporters')
+exporters_dst = os.path.join(DIST, 'exporters')
+if os.path.exists(exporters_dst):
+    shutil.rmtree(exporters_dst)
+shutil.copytree(exporters_src, exporters_dst, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+print('  [OK] exporters')
+
+# resources (原生模块、ffmpeg)
+resources_src = os.path.join(ROOT, 'resources')
+resources_dst = os.path.join(DIST, 'resources')
+if os.path.exists(resources_dst):
+    shutil.rmtree(resources_dst)
+shutil.copytree(resources_src, resources_dst, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+print('  [OK] resources')
 
 # koffi 原生模块
 KOFI_NATIVE = os.path.join(ROOT, 'scripts', 'node_modules', '@koromix')
@@ -117,7 +146,7 @@ for ico in ['icon.ico', 'icon.png']:
 print('\n[3] 创建启动器...')
 launcher = '''@echo off
 chcp 65001 >nul
-title 微信导出工具
+title 微信聊天记录本地导出工具
 echo 正在启动...
 start "" "WeChatExport.exe"
 '''

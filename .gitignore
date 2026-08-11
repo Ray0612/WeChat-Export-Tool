@@ -20,3 +20,15 @@ Thumbs.db
 # Build output
 WeChatExport/
 dist/
+
+# 发布包
+APP/
+resources/native/
+resources/bin/
+
+
+# 发布包 (太大, 不纳入仓库)
+迭代/
+*.zip
+research/scripts/decrypt.exe
+

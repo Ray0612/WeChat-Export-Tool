@@ -1,0 +1,34 @@
+### M9 File trace with MapViewOfFile ###
+[STATS] totalOpens=38 totalReads=10 uniqueFiles=16
+  [6] C:\Users\OK\AppData\Roaming\Tencent\xwechat\log/upload_size_record.ini
+  [4] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/new_strategy_file_kv
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_reportnow_3625514420_4065597752_1_1780635615_24602_600_ready.monitor
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/reportnow_3625514420_4065597752_1_1780636142_9113_600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_1_1780634104_4084_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_1_1780636320_1378_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_0_4065597752_1_1780636780_27149_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_-1_1780722918_3973_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/0_4065597752_1_1780636780_27149_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/3625514420_4065597752_1_1780722961_15875_3600_input.statistic
+[STATS] totalOpens=38 totalReads=10 uniqueFiles=16
+  [6] C:\Users\OK\AppData\Roaming\Tencent\xwechat\log/upload_size_record.ini
+  [4] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/new_strategy_file_kv
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_reportnow_3625514420_4065597752_1_1780635615_24602_600_ready.monitor
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/reportnow_3625514420_4065597752_1_1780636142_9113_600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_1_1780634104_4084_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_1_1780636320_1378_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_0_4065597752_1_1780636780_27149_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_-1_1780722918_3973_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/0_4065597752_1_1780636780_27149_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/3625514420_4065597752_1_1780722961_15875_3600_input.statistic
+[STATS] totalOpens=38 totalReads=10 uniqueFiles=16
+  [6] C:\Users\OK\AppData\Roaming\Tencent\xwechat\log/upload_size_record.ini
+  [4] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/new_strategy_file_kv
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_reportnow_3625514420_4065597752_1_1780635615_24602_600_ready.monitor
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/reportnow_3625514420_4065597752_1_1780636142_9113_600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_1_1780634104_4084_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_1_1780636320_1378_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_0_4065597752_1_1780636780_27149_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/key_3625514420_4065597752_-1_1780722918_3973_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/0_4065597752_1_1780636780_27149_3600_ready.statistic
+  [2] C:\Users\OK\AppData\Roaming\Tencent\xwechat\net_1\kvcomm/3625514420_4065597752_1_1780722961_15875_3600_input.statistic

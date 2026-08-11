@@ -1,0 +1,34 @@
+
+=== BASELINE ===
+   17056 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  135.3(  +0.0)MB
+   22336 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  108.3(  -1.2)MB
+   25920 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:   34.6(  +0.0)MB
+   18596 Weixin.exe           CPU:   0.0%( +0.0) Mem:   17.0(  +0.0)MB
+    2372 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:   24.8(  +0.0)MB
+   31908 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  160.0(  +0.0)MB
+   31528 Weixin.exe           CPU:   0.0%( +0.0) Mem:    7.9(  +0.0)MB
+   17484 Weixin.exe           CPU:   0.0%( +0.0) Mem:  620.1(  -0.0)MB
+   19724 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:   38.7(  +0.0)MB
+   21548 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  105.0(  -0.1)MB
+   43792 Weixin.exe           CPU:   0.0%( +0.0) Mem:   22.6(  +0.0)MB
+   35700 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  193.1(  -0.1)MB
+   39604 Weixin.exe           CPU:   0.0%( +0.0) Mem:   28.8(  +0.0)MB
+   11960 WeChatAppEx.exe      CPU:   0.0%(-15.6) Mem:   96.9(  +0.0)MB
+   24764 Weixin.exe           CPU:   0.0%( +0.0) Mem:   91.6(  +0.0)MB
+
+=== POST_PAGING ===
+   17056 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  135.3(  +0.0)MB
+   22336 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  108.4(  +0.1)MB
+   25920 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:   34.6(  +0.0)MB
+   18596 Weixin.exe           CPU:   0.0%( +0.0) Mem:   17.0(  +0.0)MB
+    2372 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:   24.8(  +0.0)MB
+   31908 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  160.0(  +0.0)MB
+   31528 Weixin.exe           CPU:   0.0%( +0.0) Mem:    7.9(  +0.0)MB
+   17484 Weixin.exe           CPU:   0.0%( +0.0) Mem:  619.8(  +0.0)MB
+   19724 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:   38.7(  +0.0)MB
+   21548 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  105.0(  +0.0)MB
+   43792 Weixin.exe           CPU:   0.0%( +0.0) Mem:   22.6(  +0.0)MB
+   35700 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:  193.1(  +0.0)MB
+   39604 Weixin.exe           CPU:   0.0%( +0.0) Mem:   28.8(  +0.0)MB
+   11960 WeChatAppEx.exe      CPU:   0.0%( +0.0) Mem:   96.9(  +0.0)MB
+   24764 Weixin.exe           CPU:   0.0%( +0.0) Mem:   91.6(  +0.0)MB

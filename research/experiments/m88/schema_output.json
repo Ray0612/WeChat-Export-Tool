@@ -1,0 +1,29 @@
+{
+  "database_info": {
+    "header_string": "SQLite format 3\u0000",
+    "page_size": 4096,
+    "write_version": 2,
+    "read_version": 2,
+    "reserved_bytes": 80,
+    "max_payload_frac": 64,
+    "min_payload_frac": 32,
+    "leaf_payload_frac": 32,
+    "file_change_counter": 1623646436,
+    "page_count": 24410,
+    "first_freelist_page": 0,
+    "freelist_pages": 0,
+    "schema_cookie": 1716,
+    "schema_format": 4,
+    "default_cache_size": 0,
+    "largest_root_page": 0,
+    "text_encoding": 1,
+    "user_version": 0,
+    "incremental_vacuum": 0,
+    "application_id": 0
+  },
+  "schema": {
+    "tables": [],
+    "indexes": [],
+    "views": []
+  }
+}

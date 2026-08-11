@@ -1,20 +1,42 @@
 # -*- coding: utf-8 -*-
-"""HTML exporter - Telegram style bubbles"""
-import datetime, html as h
+"""HTML exporter - Telegram style bubbles，支持文件级图片导出"""
+import datetime, html as h, os, base64
 
-def export(msgs, path, my_name="我", title="聊天记录"):
+def export(msgs, path, my_name="我", title="聊天记录", img_dir=None):
+    """导出 HTML。img_dir 指定后，图片保存到该目录并用相对路径引用"""
     msg_html = ""
     last_date = None
+    img_idx = 0
     for m in msgs:
         ts = m.get('create_time',''); c = m.get('message_content','') or ''
         sr = m.get('sender_username',''); im = m.get('is_mine',0)
         lt = int(m.get('local_type',0))
-        if lt not in (1,244813135921) or not c.strip(): continue
+        if lt == 47:
+            text = '[表情]'
+        elif lt == 3 and m.get('image_data'):
+            img_idx += 1
+            ext = m.get('image_ext', 'png')
+            if img_dir:
+                # 保存到文件并用相对路径引用
+                safe_name = f'img_{img_idx}.{ext}'
+                img_path = os.path.join(img_dir, safe_name)
+                try:
+                    with open(img_path, 'wb') as f:
+                        f.write(base64.b64decode(m['image_data']))
+                except: pass
+                text = f'<img src="图片/{safe_name}" alt="图片" loading="lazy">'
+            else:
+                text = f'<img src="data:image/{ext};base64,{m["image_data"]}" alt="图片" loading="lazy">'
+        elif lt == 3:
+            text = '[图片]'
+        elif lt in (1,244813135921) and c.strip():
+            text = h.escape(c).replace('\n','<br>')
+        else:
+            continue
         mt = datetime.datetime.fromtimestamp(int(ts)) if ts.isdigit() else None
         if not mt: continue
         ds = mt.strftime('%Y-%m-%d'); tm = mt.strftime('%H:%M:%S')
         dn = my_name if im else sr; side = "right" if im else "left"
-        text = h.escape(c).replace('\n','<br>')
         if ds != last_date:
             if last_date is not None: msg_html += '\n'
             msg_html += '      <div class="date-sep"><span>'+ds+'</span></div>\n'
@@ -49,6 +71,7 @@ body{font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-se
 .msg.left .bubble{background:#fff;color:#000;border-radius:12px;border-bottom-left-radius:4px}
 .msg.right .bubble{background:#6ab5ff;color:#fff;border-radius:12px;border-bottom-right-radius:4px}
 .msg.right .sender{text-align:right}
+.msg .bubble img{max-width:300px;max-height:300px;border-radius:4px;display:block}
 .msg-list{flex:1;padding:4px 0}
 .highlight{background:#fef08a;border-radius:2px;padding:0 1px}
 .msg.hidden{display:none}

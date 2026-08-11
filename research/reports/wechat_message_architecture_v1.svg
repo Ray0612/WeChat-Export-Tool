@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1400" font-family="'Courier New', monospace">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#555"/>
+    </marker>
+    <marker id="arrow-dash" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#d4a017"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#c0392b"/>
+    </marker>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34495e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="userLayer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8f4f8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d1ecf1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bizLayer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fef9e7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fdebd0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cacheLayer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#eafaf1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d5f5e3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="uiLayer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f4ecf7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e8daef;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="storeLayer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fdedec;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fadbd8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="1400" fill="#f8f9fa" rx="8"/>
+
+  <!-- Title -->
+  <rect x="0" y="0" width="1100" height="50" fill="url(#headerGrad)" rx="8"/>
+  <rect x="0" y="40" width="1100" height="10" fill="url(#headerGrad)"/>
+  <text x="550" y="32" text-anchor="middle" fill="white" font-size="18" font-weight="bold">WeChat 4.1.x Message Architecture V1</text>
+
+  <!-- Legend -->
+  <rect x="20" y="60" width="1060" height="35" fill="none" rx="4" stroke="#ddd" stroke-width="1"/>
+  <rect x="30" y="68" width="14" height="14" fill="#27ae60" rx="2"/>
+  <text x="48" y="80" fill="#333" font-size="12">Confirmed</text>
+  <rect x="150" y="68" width="14" height="14" fill="#f39c12" rx="2"/>
+  <text x="168" y="80" fill="#333" font-size="12">High Confidence</text>
+  <rect x="290" y="68" width="14" height="14" fill="#e74c3c" rx="2"/>
+  <text x="308" y="80" fill="#333" font-size="12">Falsified</text>
+  <rect x="400" y="68" width="14" height="14" fill="#95a5a6" rx="2"/>
+  <text x="418" y="80" fill="#333" font-size="12">Unknown</text>
+  <line x1="530" y1="74" x2="580" y2="74" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="590" y="80" fill="#333" font-size="12">Data Flow (verified)</text>
+  <line x1="760" y1="74" x2="810" y2="74" stroke="#d4a017" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-dash)"/>
+  <text x="820" y="80" fill="#333" font-size="12">Side Effect</text>
+
+  <!-- ========== LAYER 1: USER OPERATIONS ========== -->
+  <rect x="20" y="110" width="1060" height="100" fill="url(#userLayer)" rx="6" stroke="#5dade2" stroke-width="1.5"/>
+  <text x="40" y="132" fill="#2e86c1" font-size="13" font-weight="bold">Layer 1: User Operations</text>
+
+  <!-- PageUp box -->
+  <rect x="60" y="145" width="260" height="50" fill="white" rx="6" stroke="#5dade2" stroke-width="1.5"/>
+  <text x="190" y="165" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">PageUp (Physical Key Only)</text>
+  <text x="190" y="182" text-anchor="middle" fill="#7f8c8d" font-size="10">19 programmatic methods all blocked by Chromium WebView</text>
+  <rect x="55" y="142" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="64" y="155" fill="white" font-size="10" font-weight="bold">✓</text>
+
+  <!-- Session Switch box -->
+  <rect x="370" y="145" width="260" height="50" fill="white" rx="6" stroke="#5dade2" stroke-width="1.5"/>
+  <text x="500" y="165" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">Session Switch</text>
+  <text x="500" y="182" text-anchor="middle" fill="#7f8c8d" font-size="10">New PagingContext, changes arg2+0x000</text>
+  <rect x="365" y="142" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="374" y="155" fill="white" font-size="10" font-weight="bold">✓</text>
+
+  <!-- Open Chat box -->
+  <rect x="680" y="145" width="260" height="50" fill="white" rx="6" stroke="#5dade2" stroke-width="1.5"/>
+  <text x="810" y="165" text-anchor="middle" fill="#2c3e50" font-size="13" font-weight="bold">Open Chat Window</text>
+  <text x="810" y="182" text-anchor="middle" fill="#7f8c8d" font-size="10">Triggers initial GetPagedMessages load</text>
+  <rect x="675" y="142" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="684" y="155" fill="white" font-size="10" font-weight="bold">✓</text>
+
+  <!-- Arrow from PageUp to GetPagedMessages -->
+  <line x1="190" y1="210" x2="190" y2="250" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="200" y="235" fill="#7f8c8d" font-size="9" font-style="italic">triggers</text>
+  <line x1="500" y1="210" x2="500" y2="250" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ========== LAYER 2: BUSINESS LOGIC ========== -->
+  <rect x="20" y="255" width="1060" height="320" fill="url(#bizLayer)" rx="6" stroke="#f1c40f" stroke-width="1.5"/>
+  <text x="40" y="277" fill="#d4a017" font-size="13" font-weight="bold">Layer 2: Business Logic</text>
+
+  <!-- GetPagedMessages (center, main) -->
+  <rect x="350" y="295" width="400" height="90" fill="white" rx="8" stroke="#e67e22" stroke-width="2"/>
+  <text x="550" y="316" text-anchor="middle" fill="#e67e22" font-size="14" font-weight="bold">GetPagedMessages</text>
+  <text x="550" y="332" text-anchor="middle" fill="#7f8c8d" font-size="11">FUN_1816ade70 (v4.1.9.56) / TBD (v4.1.10.29)</text>
+  <text x="550" y="348" text-anchor="middle" fill="#7f8c8d" font-size="10">Signature: GlobalCtx* fn(Manager, GlobalCtx, PagingContext, void*)</text>
+  <text x="550" y="364" text-anchor="middle" fill="#7f8c8d" font-size="10">retval = arg1 (GlobalContext, NOT message list)</text>
+  <rect x="820" y="295" width="200" height="30" fill="#27ae60" rx="3"/>
+  <text x="920" y="315" text-anchor="middle" fill="white" font-size="11">✓ Confirmed (M2, M3.5, M4, M6)</text>
+
+  <!-- arg0 Manager -->
+  <rect x="100" y="310" width="200" height="55" fill="white" rx="6" stroke="#f39c12" stroke-width="1.5"/>
+  <text x="200" y="328" text-anchor="middle" fill="#2c3e50" font-size="11" font-weight="bold">MessageList Manager (arg0)</text>
+  <text x="200" y="345" text-anchor="middle" fill="#7f8c8d" font-size="10">0x1f46ba1c1b0 (invariant)</text>
+  <text x="200" y="358" text-anchor="middle" fill="#c0392b" font-size="9">NOT a message list cache</text>
+
+  <!-- arg1 GlobalContext -->
+  <rect x="800" y="310" width="200" height="55" fill="white" rx="6" stroke="#f39c12" stroke-width="1.5"/>
+  <text x="900" y="328" text-anchor="middle" fill="#2c3e50" font-size="11" font-weight="bold">GlobalContext (arg1 / retval)</text>
+  <text x="900" y="345" text-anchor="middle" fill="#7f8c8d" font-size="10">0x8ecb6ff4f0 (invariant)</text>
+  <text x="900" y="358" text-anchor="middle" fill="#c0392b" font-size="9">NOT message data</text>
+
+  <!-- arg2 PagingContext -->
+  <rect x="260" y="420" width="580" height="70" fill="white" rx="6" stroke="#f39c12" stroke-width="1.5"/>
+  <text x="550" y="440" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="bold">PagingContext (arg2 — per-call struct)</text>
+  <text x="300" y="460" fill="#555" font-size="10">+0x000: receiver (wxid / filehelper / @chatroom)</text>
+  <text x="300" y="475" fill="#555" font-size="10">+0x028: cursor (Unix ms timestamp, decreasing per page)</text>
+  <text x="300" y="490" fill="#555" font-size="10">+0x030: counter (decreasing, step ~30 = messages per page)</text>
+  <rect x="455" y="417" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="464" y="430" fill="white" font-size="10" font-weight="bold">✓</text>
+
+  <!-- Arguments arrows -->
+  <line x1="550" y1="385" x2="200" y2="365" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="320" y="380" fill="#7f8c8d" font-size="9">arg0</text>
+  <line x1="550" y1="385" x2="900" y2="365" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="750" y="380" fill="#7f8c8d" font-size="9">arg1 / retval</text>
+  <line x1="550" y1="385" x2="550" y2="420" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="560" y="405" fill="#7f8c8d" font-size="9">arg2</text>
+
+  <!-- Side effect arrow -->
+  <line x1="550" y1="490" x2="550" y2="530" stroke="#d4a017" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-dash)"/>
+  <text x="560" y="520" fill="#d4a017" font-size="10" font-style="italic">side effect → writes to Internal Cache</text>
+
+  <!-- ========== LAYER 3: CACHE LAYER ========== -->
+  <rect x="20" y="590" width="1060" height="310" fill="url(#cacheLayer)" rx="6" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="40" y="612" fill="#1e8449" font-size="13" font-weight="bold">Layer 3: Cache Layer (in Weixin.exe heap memory)</text>
+
+  <!-- Internal Cache (unknown) -->
+  <rect x="380" y="630" width="340" height="40" fill="white" rx="6" stroke="#95a5a6" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="550" y="650" text-anchor="middle" fill="#95a5a6" font-size="12" font-weight="bold">Internal Message Cache (location unknown)</text>
+  <text x="550" y="664" text-anchor="middle" fill="#95a5a6" font-size="10">Inferred: GetPagedMessages writes messages here as side effect</text>
+  <rect x="375" y="627" width="18" height="18" fill="#95a5a6" rx="3"/>
+  <text x="381" y="640" fill="white" font-size="8">?</text>
+
+  <!-- Arrow from PagingContext to Internal Cache -->
+  <line x1="550" y1="630" x2="550" y2="590" stroke="#d4a017" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow-dash)"/>
+
+  <!-- Compact Structure -->
+  <rect x="60" y="700" width="300" height="90" fill="white" rx="6" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="210" y="720" text-anchor="middle" fill="#1e8449" font-size="12" font-weight="bold">Compact Structure (34B)</text>
+  <text x="210" y="736" text-anchor="middle" fill="#7f8c8d" font-size="10">Prefix: 1b 02 05 09 01 01 04</text>
+  <text x="210" y="750" text-anchor="middle" fill="#7f8c8d" font-size="10">~25 entries, reversed order, volatile</text>
+  <text x="210" y="764" text-anchor="middle" fill="#7f8c8d" font-size="10">Fields: content, sequence, session_tag, user_id</text>
+  <rect x="55" y="697" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="64" y="710" fill="white" font-size="10" font-weight="bold">✓</text>
+
+  <!-- Page Context -->
+  <rect x="400" y="700" width="300" height="90" fill="white" rx="6" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="550" y="720" text-anchor="middle" fill="#1e8449" font-size="12" font-weight="bold">Page Context (arg1+0x000)</text>
+  <text x="550" y="736" text-anchor="middle" fill="#7f8c8d" font-size="10">vtable ptr (fixed) + message count at +0x0c</text>
+  <text x="550" y="750" text-anchor="middle" fill="#7f8c8d" font-size="10">Pointer set by GetPagedMessages</text>
+  <text x="550" y="764" text-anchor="middle" fill="#c0392b" font-size="9">NOT message data — page management metadata</text>
+  <rect x="395" y="697" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="404" y="710" fill="white" font-size="10" font-weight="bold">✓</text>
+
+  <!-- Render Buffer -->
+  <rect x="740" y="700" width="300" height="90" fill="white" rx="6" stroke="#f39c12" stroke-width="1.5"/>
+  <text x="890" y="720" text-anchor="middle" fill="#d4a017" font-size="12" font-weight="bold">Render Buffer (arg1+0x008)</text>
+  <text x="890" y="736" text-anchor="middle" fill="#7f8c8d" font-size="10">Qt texture/font rendering cache</text>
+  <text x="890" y="750" text-anchor="middle" fill="#7f8c8d" font-size="10">Contains text glyph pixel data</text>
+  <text x="890" y="764" text-anchor="middle" fill="#c0392b" font-size="9">NOT message data — display only</text>
+  <rect x="735" y="697" width="18" height="18" fill="#f39c12" rx="3"/>
+  <text x="743" y="710" fill="white" font-size="10" font-weight="bold">~</text>
+
+  <!-- ProtoBuf Residual -->
+  <rect x="60" y="810" width="300" height="60" fill="white" rx="6" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="210" y="830" text-anchor="middle" fill="#d4a017" font-size="11" font-weight="bold">ProtoBuf Fragments</text>
+  <text x="210" y="848" text-anchor="middle" fill="#7f8c8d" font-size="10">residual in heap — receiver, content, timestamp, msgsource</text>
+  <rect x="55" y="807" width="18" height="18" fill="#f39c12" rx="3"/>
+  <text x="63" y="820" fill="white" font-size="10" font-weight="bold">~</text>
+
+  <!-- Record Area -->
+  <rect x="400" y="810" width="300" height="60" fill="white" rx="6" stroke="#27ae60" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="550" y="830" text-anchor="middle" fill="#1e8449" font-size="11" font-weight="bold">Record Area (key-value)</text>
+  <text x="550" y="848" text-anchor="middle" fill="#7f8c8d" font-size="10">0x73=wxid, 0x76=@chatroom, 0x77=chatroom_name</text>
+  <rect x="395" y="807" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="404" y="820" fill="white" font-size="10" font-weight="bold">✓</text>
+
+  <!-- Caching arrows -->
+  <line x1="210" y1="790" x2="210" y2="810" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="550" y1="790" x2="550" y2="810" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- Arrow: Internal Cache -> Compact Structure -->
+  <line x1="550" y1="670" x2="210" y2="700" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="350" y="690" fill="#7f8c8d" font-size="9">populated from internal cache</text>
+
+  <!-- ========== LAYER 4: UI LAYER ========== -->
+  <rect x="20" y="910" width="1060" height="130" fill="url(#uiLayer)" rx="6" stroke="#8e44ad" stroke-width="1.5"/>
+  <text x="40" y="932" fill="#7d3c98" font-size="13" font-weight="bold">Layer 4: UI Layer (Qt 5.15.14 + Chromium WebView)</text>
+
+  <rect x="60" y="950" width="220" height="40" fill="white" rx="6" stroke="#8e44ad" stroke-width="1"/>
+  <text x="170" y="970" text-anchor="middle" fill="#2c3e50" font-size="11">RecyclerList</text>
+  <text x="170" y="983" text-anchor="middle" fill="#7f8c8d" font-size="9">message container</text>
+
+  <line x1="280" y1="970" x2="340" y2="970" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <rect x="350" y="950" width="220" height="40" fill="white" rx="6" stroke="#8e44ad" stroke-width="1"/>
+  <text x="460" y="970" text-anchor="middle" fill="#2c3e50" font-size="11">ChatView</text>
+  <text x="460" y="983" text-anchor="middle" fill="#7f8c8d" font-size="9">scrollable viewport</text>
+
+  <line x1="570" y1="970" x2="630" y2="970" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <rect x="640" y="950" width="220" height="40" fill="white" rx="6" stroke="#8e44ad" stroke-width="1"/>
+  <text x="750" y="970" text-anchor="middle" fill="#2c3e50" font-size="11">ChatTextViewHost</text>
+  <text x="750" y="983" text-anchor="middle" fill="#7f8c8d" font-size="9">text bubble renderer</text>
+
+  <text x="550" y="1025" text-anchor="middle" fill="#7d3c98" font-size="10" font-style="italic">UI layer inferred from DLL Qt class strings — not directly hooked</text>
+
+  <!-- Arrow: compact to UI -->
+  <line x1="210" y1="870" x2="210" y2="950" stroke="#555" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="220" y="915" fill="#7f8c8d" font-size="9">UI reads from compact structure</text>
+
+  <!-- ========== LAYER 5: STORAGE LAYER ========== -->
+  <rect x="20" y="1060" width="1060" height="130" fill="url(#storeLayer)" rx="6" stroke="#e74c3c" stroke-width="1.5"/>
+  <text x="40" y="1082" fill="#c0392b" font-size="13" font-weight="bold">Layer 5: Storage Layer</text>
+
+  <rect x="200" y="1100" width="700" height="60" fill="white" rx="8" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="550" y="1122" text-anchor="middle" fill="#c0392b" font-size="14" font-weight="bold">Offline History Storage</text>
+  <text x="550" y="1140" text-anchor="middle" fill="#555" font-size="11">✅ Exists (verified: 143 pages, 319 days, counter=1 boundary, offline)</text>
+  <text x="550" y="1154" text-anchor="middle" fill="#e74c3c" font-size="11">❌ Location unknown (35k files searched, 0 matches. File API hooks: 0 reads during paging)</text>
+
+  <rect x="195" y="1097" width="18" height="18" fill="#27ae60" rx="3"/>
+  <text x="204" y="1110" fill="white" font-size="10" font-weight="bold">✓</text>
+  <rect x="215" y="1097" width="18" height="18" fill="#e74c3c" rx="3"/>
+  <text x="222" y="1110" fill="white" font-size="10" font-weight="bold">✗</text>
+
+  <!-- Arrow: storage -> GetPagedMessages (for loading) -->
+  <line x1="250" y1="1100" x2="250" y2="385" stroke="#d4a017" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-dash)"/>
+  <text x="260" y="750" fill="#d4a017" font-size="10" font-style="italic" transform="rotate(-90, 260, 750)">data loaded at startup / first chat open (not during paging)</text>
+
+  <!-- ========== FALSIFIED NOTES ========== -->
+  <rect x="20" y="1210" width="1060" height="160" fill="#fdedec" rx="6" stroke="#e74c3c" stroke-width="1"/>
+  <text x="40" y="1232" fill="#c0392b" font-size="13" font-weight="bold">Falsified Paths (do not retry)</text>
+
+  <text x="60" y="1258" fill="#555" font-size="11">✗ SQLite / SQLCipher database: 35,063 files scanned, 0 matches. ProcMon: 0 .db accesses during chat.</text>
+  <text x="60" y="1278" fill="#555" font-size="11">✗ LevelDB / IndexedDB: Contains web config only, no chat messages.</text>
+  <text x="60" y="1298" fill="#555" font-size="11">✗ MMKV storage: No chat message content found.</text>
+  <text x="60" y="1318" fill="#555" font-size="11">✗ Programmatic scrolling: 19 methods (SendInput, pyautogui, VBScript, C# P/Invoke, Frida) all blocked.</text>
+  <text x="60" y="1338" fill="#555" font-size="11">✗ UI Automation (Accessibility): Qt + Chromium combo blocks access.</text>
+  <text x="60" y="1358" fill="#555" font-size="11">✗ Hook export names: Weixin.dll symbols are stripped.</text>
+
+  <!-- Footer -->
+  <text x="550" y="1390" text-anchor="middle" fill="#95a5a6" font-size="10">Research conducted 2026-06-04 to 2026-06-06 | WeChat 4.1.9.56 → 4.1.10.29 | Windows 11</text>
+</svg>

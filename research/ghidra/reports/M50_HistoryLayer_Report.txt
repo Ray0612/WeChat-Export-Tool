@@ -1,0 +1,98 @@
+M50: History Storage Layer Search Report
+=========================================
+Date: 2026-06-07
+Target: Weixin.dll v4.1.10.29
+Scope: Static analysis (Ghidra)
+
+1. OBJECTIVE
+-----------
+Identify the history/archival storage layer responsible for persisting
+messages beyond the in-memory cache analyzed in M23-M45. The hypothesis
+was that older messages (scrollback beyond the working set) are retrieved
+from an on-disk store (SQLite, binary file, or similar).
+
+2. METHODOLOGY
+--------------
+Searched Weixin.dll (v4.1.10.29) for known string patterns that would
+reveal storage-layer functions:
+
+  - "History"
+  - "Storage"
+  - "SvrId"
+  - "Conversation"
+  - "Repository"
+  - "Archive"
+  - "Cache"
+  - "persist"
+  - "SELECT" (SQL)
+  - "INSERT" (SQL)
+  - "sqlite"
+  - ".db"
+
+3. RESULTS: STRING SEARCH FAILURE
+----------------------------------
+All searches returned ZERO results within the Weixin.dll analysis scope.
+
+The primary cause is STRING OBFUSCATION. Weixin.dll v4.1.10.29 employs
+extensive runtime string deobfuscation:
+
+  - Strings are XOR-encoded with a rotating key
+  - String references go through a decoding thunk at call sites
+  - Static analysis cannot resolve these strings without emulation
+  - Ghidra's string search finds only non-obfuscated strings (import
+    names, error messages, and debug strings that bypass obfuscation)
+
+4. CALL CHAIN STATUS
+--------------------
+The call chain has been traced to the network dispatcher level (M27):
+
+  FUN_1846d67d0 (WeChatWin.dll) -> FUN_185b91d80 -> FUN_181771eb0 -> ...
+
+Beyond the network dispatcher in WeChatWin.dll, the code path for
+history retrieval (loading messages not in the in-memory cache) is
+not reachable within the Weixin.dll static analysis scope.
+
+5. HYPOTHESES
+-------------
+Based on the architecture observed so far:
+
+  a) History is stored in a SQLite database managed by WeChatWin.dll
+     (most likely, based on standard WeChat architecture documented
+     externally).
+
+  b) The DB access layer lives entirely in WeChatWin.dll, and only
+     resolved message objects cross into Weixin.dll through the
+     dispatcher.
+
+  c) The in-memory cache (0x2f0 FNV-1a hash table) is the only data
+     store directly managed by Weixin.dll.
+
+6. CONCLUSION
+-------------
+Static analysis of Weixin.dll v4.1.10.29 alone CANNOT resolve the
+history storage layer. String obfuscation prevents identification
+of storage-related symbols, and the relevant code likely resides
+in WeChatWin.dll.
+
+7. RECOMMENDED NEXT STEPS
+-------------------------
+The next step requires DYNAMIC ANALYSIS:
+
+  a) Frida hooking:
+     - Hook malloc(0x2d8) to capture all MessageNode allocations
+       with full stack traces
+     - Hook sqlite3_open / sqlite3_exec (if symbols present) to
+       capture DB queries
+     - Hook FUN_185b91d80 to trace all cross-module dispatches
+
+  b) Process Monitor (ProcMon / macOS dtrace):
+     - Monitor file I/O to identify SQLite database files opened
+       by Weixin.dll or WeChatWin.dll
+     - Look for .db files in the WeChat application data directory
+
+  c) Potential targets for file monitoring:
+     - ~/Library/Containers/com.tencent.xinWeChat/
+     - MicroMsg.db
+     - MSG directory under the user's WeChat data folder
+
+--- END OF REPORT ---

@@ -1,69 +1,89 @@
-# WeChat Export Tool
+# 微信聊天记录本地导出工具 v1.2.0
 
-微信聊天记录导出工具，支持按联系人浏览和导出聊天记录。
+Windows 微信聊天记录本地导出工具。双击即用，提取密钥 → 解密数据库 → 导出聊天记录。
+
+> **研究资料** 见 [`research/README.md`](research/README.md) · **发布说明** 见 [`RELEASE.md`](RELEASE.md)
+
+---
 
 ## 功能
 
-- 解密微信本地数据库，读取聊天记录
-- 按联系人查看历史消息
-- 导出聊天记录
-- 支持微信 4.1.10.29 版本
+- ✅ 一键提取微信数据库密钥（自动识别 / 手动粘贴）
+- ✅ 密钥持久化，下次启动自动加载
+- ✅ 浏览会话列表（支持搜索过滤）
+- ✅ 查看聊天记录（文字/图片/语音/表情等类型占位符）
+- ✅ 多种导出格式：**HTML / PDF / TXT / JSON / CSV / Excel**
+- ✅ HTML 导出：独立文件夹 + `图片/` 子目录
+- ✅ 图片解密导出
+- ✅ 日志记录系统
+- ✅ 导出进度窗口（后台线程，不卡界面）
 
-## 使用
-
-从 [Releases](https://github.com/Ray0612/WeChat-Export-Tool/releases) 下载最新版本，解压后：
-
-1. 双击 `启动工具.bat` 或 `WeChatExport.exe`
-2. 点击 **"🔑 获取密钥"** — 会提示关闭微信，关掉后它会自动捕获解密密钥
-3. 密钥获取成功后，点击 **"🗄️ 连接数据库"**
-4. 连接成功后再点 **"📤 浏览会话"** — 即可查看所有聊天记录
-
-> 详细操作步骤见[使用教程]()
-
-### 源码运行
+## 快速开始
 
 ```bash
-pip install -r requirements.txt
-python run_gui.py
-```
+# 开发模式
+python gui/app_v3.py
 
-## 构建
-
-```bash
+# 构建发布包
 python build_dist.py
+# 输出: dist/WeChatExport/ (双击 WeChatExport.exe 或 启动工具.bat)
 ```
 
-## 技术栈
+### 使用流程
 
-- Python 3.13 — 后端解密与导出
-- Electron — GUI 界面
-- WCDB — 微信数据库解密
+1. 设置 **微信数据目录**（`xwechat_files` 所在位置）
+2. 设置 **导出工作目录**（导出文件存放位置，自动创建 `WeChat/` 子目录）
+3. **获取密钥**（或手动粘贴已有 64 位密钥）
+4. **连接数据库**
+5. **浏览会话** → 选会话 → 查看消息 → 选格式 → **导出**
 
-## 许可证
+## 项目结构
 
-GPL v3
+```
+wechat_export_project/
+├── gui/
+│   ├── app_v3.py              ← 主 GUI 程序 (tkinter)
+│   └── icon.ico               ← 窗口图标
+├── scripts/
+│   ├── get_key.js              ← 密钥提取 (Node.js + koffi + wx_key.dll)
+│   ├── wcdb_server.js          ← WCDB HTTP 服务 (Node.js + Electron)
+│   ├── wcdb_server.py          ← WCDB 客户端 (Python)
+│   ├── decrypt_image.js        ← 图片解密助手
+│   └── node_modules/           ← Node.js 依赖
+├── exporters/
+│   ├── html_exporter.py        ← HTML 导出
+│   ├── pdf_exporter.py         ← PDF 导出
+│   ├── csv_exporter.py         ← CSV 导出
+│   ├── excel_exporter.py       ← Excel 导出
+│   ├── image_decoder.py        ← .dat 图片解密
+│   ├── media_resolver.py       ← 图片解析编排器
+│   ├── packed_info_parser.py   ← 图片信息提取
+│   └── logger.py               ← 日志系统
+├── build_dist.py               ← 打包脚本
+└── APP/WeChatExport/           ← 发布包
+```
 
-## 相关
+## 技术方案
 
-- 研究仓库: [WeChat-v4-export-research](https://github.com/Ray0612/WeChat-v4-export-research)
-- 国内的朋友可以访问我的博客网站使用[github高速下载工具](https://blog.ray2.asia/tools/download-relay/)，将这个(release)网址复制进来高速下载 [Releases v1.1](https://github.com/Ray0612/WeChat-Export-Tool/releases)
+- **密钥提取**: `wx_key.dll` (MIT) Hook `SetDBKey` 捕获 SQLCipher 密钥
+- **数据库解密**: WCDB 框架 (BSD) 通过 Electron 解密 SQLite 数据库
+- **图片解密**: 从 `wx_key.dll` 获取 code → 推导 AES key → 原生模块解密 `.dat` → ffmpeg 转码 HEVC
+- **导出**: 多种格式，HTML 独立图片文件夹
 
-## ToDoList
+## 依赖
 
-- 现在正在着手开发QQ聊天记录导出的开源工具，为之后充实语料库做基础，后续会把两个工具的仓库合并
-- v1.2 支持多种类型的消息的导出
-- v1.3 更美观的gui，更轻量的release
+| 组件 | 许可证 | 用途 |
+|------|--------|------|
+| wx_key.dll | MIT | 微信内存密钥提取 |
+| WCDB.dll | BSD 3-Clause | 数据库解密 |
+| Electron | MIT | WCDB 运行时 |
+| koffi | MIT | Node.js FFI |
+| fzstd | MIT | ZSTD 解压 |
+| ffmpeg | GPL | HEVC→JPG 转码 |
+| fpdf2 | LGPL | PDF 生成 |
+| openpyxl | MIT | Excel 生成 |
 
-## v1.1
+## 版本历史
 
-- 新增导出格式：PDF，CSV，Excel，HTML（最美观，支持搜索）
-- 修复启动时检测企业微信作为微信进程的bug
-- 修复关闭程序时临时文件清理不完全
-- 修复txt格式中时间戳显示错误
-
-## v1.0.0
-
-- 支持本地导出微信聊天记录
-- 支持导出文字聊天记录
-- 支持以txt和json格式导出
-- 支持搜索联系人指定会话导出
+- **v1.0** (2026-06-11): 文字消息导出
+- **v1.2.0** (2026-07-15): 图片解密导出、多格式导出、日志系统、密钥持久化

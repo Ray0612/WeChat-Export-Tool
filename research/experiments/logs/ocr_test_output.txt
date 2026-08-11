@@ -1,0 +1,5 @@
+一
+
+Bash(python -X utf8 -c “
+import pytesseract, os...)
+| Running...

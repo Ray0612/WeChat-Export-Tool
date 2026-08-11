@@ -1,0 +1,2 @@
+# WeChat V4 Memory Exporter V0.1
+pymem>=1.14.0

@@ -10,10 +10,7 @@ const PROGRAM_FILES = process.env['ProgramFiles'] || 'C:\\Program Files';
 const PROGRAM_FILES_X86 = process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
 const DLL_CANDIDATES = [
     path.join(SELF, '..', 'dll', 'wx_key.dll'),
-    path.join(SELF, '..', '..', '..', 'research', 'tools', 'wx_key', 'build', 'Release', 'wx_key.dll'),
-    path.join(LOCAL_APP_DATA, 'Programs', 'WeFlow', 'resources', 'resources', 'key', 'win32', 'x64', 'wx_key.dll'),
-    path.join(PROGRAM_FILES, 'Tencent', 'WeFlow', 'resources', 'resources', 'key', 'win32', 'x64', 'wx_key.dll'),
-    path.join(PROGRAM_FILES_X86, 'Tencent', 'WeFlow', 'resources', 'resources', 'key', 'win32', 'x64', 'wx_key.dll'),
+    path.join(SELF, '..', 'APP', 'WeChatExport', 'dll', 'wx_key.dll'),
 ];
 const OUT = path.join(process.env.USERPROFILE || SELF, 'Desktop', 'wx_export');
 const STATUS_FILE = path.join(OUT, 'key_status.txt');
@@ -27,7 +24,7 @@ function decode(arr) {
 }
 
 async function findWeChatPid() {
-    const names = ['Weixin.exe', 'WeChat.exe', 'WeChatAppEx.exe'];
+    const names = ['Weixin.exe', 'WeChat.exe'];
     const tasklistPaths = ['tasklist', 'C:\\Windows\\System32\\tasklist.exe'];
     for (const tl of tasklistPaths) {
         for (const name of names) {
@@ -45,7 +42,7 @@ async function findWeChatPid() {
     try {
         const out = execFileSync('wmic', ['process', 'where', 'name like "%Wei%"', 'get', 'ProcessId,name'], { encoding: 'utf8', timeout: 5000 });
         for (const line of out.split('\n')) {
-            if (line.includes('Weixin') || line.includes('WeChat')) {
+            if ((line.includes('Weixin') || line.includes('WeChat')) && !line.includes('WXWork') && !line.includes('WeCom')) {
                 const parts = line.trim().split(/\s+/);
                 const pid = parseInt(parts[parts.length - 1]);
                 if (!isNaN(pid)) return pid;
@@ -82,13 +79,15 @@ function loadWxKey() {
     const koffi = require('koffi');
     const lib = koffi.load(dllPath);
     setStatus('dll_loaded');
-    return {
+    const api = {
         initHook: lib.func('bool InitializeHook(uint32 targetPid)'),
         pollKey: lib.func('bool PollKeyData(_Out_ char* buf, int size)'),
         getStatus: lib.func('bool GetStatusMessage(_Out_ char* buf, int size, _Out_ int* level)'),
         cleanup: lib.func('bool CleanupHook()'),
         getError: lib.func('const char* GetLastErrorMsg()'),
     };
+    api._lib = lib;
+    return api;
 }
 
 async function main() {
@@ -157,6 +156,23 @@ async function main() {
             if (/^[0-9a-f]{64}$/i.test(key)) {
                 fs.writeFileSync(path.join(OUT, 'key.txt'), key);
                 console.log(`\n[KEY] ✅ 成功: ${key.substring(0, 16)}...`);
+
+                // 获取图片密钥 (通过 wx_key.dll 提取)
+                try {
+                    const imgBuf = Buffer.alloc(8192);
+                    const gik = api._lib.func('bool GetImageKey(char* buf, int size)');
+                    if (gik(imgBuf, imgBuf.length)) {
+                        const str = imgBuf.toString('utf-8').replace(/\0/g, '').trim();
+                        if (str) {
+                            const imgData = JSON.parse(str);
+                            fs.writeFileSync(path.join(OUT, 'image_key.json'), JSON.stringify(imgData, null, 2));
+                            console.log(`[KEY] ✅ 图片密钥已保存`);
+                        }
+                    }
+                } catch(e) {
+                    console.log(`[KEY] 图片密钥获取: ${e.message.substring(0, 60)}`);
+                }
+
                 setStatus('captured');
                 api.cleanup();
                 process.exit(0);
