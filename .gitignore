@@ -2,33 +2,27 @@
 __pycache__/
 *.pyc
 *.pyo
-dist/
 build/
 *.egg-info/
-
 # Node
 node_modules/
-
 # IDE
 .vscode/
 .idea/
-
 # OS
 .DS_Store
 Thumbs.db
 
 # Build output
-WeChatExport/
 dist/
+WeChatExport/
 
 # 发布包
 APP/
 resources/native/
 resources/bin/
 
-
 # 发布包 (太大, 不纳入仓库)
 迭代/
 *.zip
 research/scripts/decrypt.exe
-
