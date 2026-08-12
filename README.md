@@ -1,21 +1,12 @@
-# 微信聊天记录本地导出工具 v1.2.0
+# WeChat Export Tool
 
-Windows 微信聊天记录本地导出工具。双击即用，提取密钥 → 解密数据库 → 导出聊天记录。
-
-> **研究资料** 见 [`research/README.md`](research/README.md) · **发布说明** 见 [`RELEASE.md`](RELEASE.md)
-
----
+微信聊天记录导出工具，支持按联系人浏览和导出聊天记录。
 
 ## 功能
 
 - 解密微信本地数据库，读取聊天记录
 - 按联系人查看历史消息
-- 一键提取微信数据库密钥（自动识别 / 手动粘贴），密钥自动持久化
-- 多种导出格式：**HTML / PDF / TXT / JSON / CSV / Excel**
-- HTML 导出生成独立文件夹 + `图片/` 子目录
-- 图片解密导出（支持 HTML、PDF 格式）
-- 日志记录系统（崩溃、图片处理、导出操作）
-- 导出进度窗口（后台线程，不卡界面）
+- 导出聊天记录
 - 支持微信 4.X 版本
 
 ## 使用
@@ -29,7 +20,7 @@ Windows 微信聊天记录本地导出工具。双击即用，提取密钥 → �
 5. 连接成功后再点 **"📤 浏览会话"** — 即可查看所有聊天记录
 6. 导出对应格式
 
-> 国内的朋友可以访问我的博客网站使用 [github高速下载工具](https://blog.ray2.asia/tools/download-relay/)，将这个（release）网址复制进来高速下载 [Releases v1.2.0](https://github.com/Ray0612/WeChat-Export-Tool/releases)
+> 详细操作步骤见[使用教程（制作中...）]()
 
 ### 源码运行
 
@@ -38,60 +29,54 @@ pip install -r requirements.txt
 python gui/app_v3.py
 ```
 
-## 项目结构
+## 构建
 
-```
-wechat_export_project/
-├── gui/
-│   ├── app_v3.py              ← 主 GUI 程序 (tkinter)
-│   └── icon.ico               ← 窗口图标
-├── scripts/
-│   ├── get_key.js              ← 密钥提取 (Node.js + koffi + wx_key.dll)
-│   ├── wcdb_server.js          ← WCDB HTTP 服务 (Node.js + Electron)
-│   ├── wcdb_server.py          ← WCDB 客户端 (Python)
-│   ├── decrypt_image.js        ← 图片解密助手
-│   └── node_modules/           ← Node.js 依赖
-├── exporters/
-│   ├── html_exporter.py        ← HTML 导出
-│   ├── pdf_exporter.py         ← PDF 导出
-│   ├── csv_exporter.py         ← CSV 导出
-│   ├── excel_exporter.py       ← Excel 导出
-│   ├── image_decoder.py        ← .dat 图片解密
-│   ├── media_resolver.py       ← 图片解析编排器
-│   ├── packed_info_parser.py   ← 图片信息提取
-│   └── logger.py               ← 日志系统
-├── build_dist.py               ← 打包脚本
-└── APP/WeChatExport/           ← 发布包
+```bash
+python build_dist.py
 ```
 
-## 技术方案
+## 技术栈
 
-- **密钥提取**: `wx_key.dll` (MIT) Hook `SetDBKey` 捕获 SQLCipher 密钥
-- **数据库解密**: WCDB 框架 (BSD) 通过 Electron 解密 SQLite 数据库
-- **图片解密**: 从 `wx_key.dll` 获取 code → 推导 AES key → 原生模块解密 `.dat` → ffmpeg 转码 HEVC
-- **导出**: 多种格式，HTML 独立图片文件夹
+- Python 3.13 — 后端解密与导出
+- Python tkinter — GUI 界面
+- Electron — WCDB — 微信数据库解密
 
-## 依赖
+## 许可证
 
-| 组件 | 许可证 | 用途 |
-|------|--------|------|
-| wx_key.dll | MIT | 微信内存密钥提取 |
-| WCDB.dll | BSD 3-Clause | 数据库解密 |
-| Electron | MIT | WCDB 运行时 |
-| koffi | MIT | Node.js FFI |
-| fzstd | MIT | ZSTD 解压 |
-| ffmpeg | GPL | HEVC→JPG 转码 |
-| fpdf2 | LGPL | PDF 生成 |
-| openpyxl | MIT | Excel 生成 |
+GPL v3
 
-## Roadmap
+## 相关
 
-- 正在着手开发 QQ 聊天记录导出的开源工具，后续会把两个工具的仓库合并
-- v1.2.X 支持多种类型的消息导出（图片✅ 表情❌ 表情包❌ 视频❌ 语音❌）
-- v1.3 更美观的 GUI，更轻量的 release
-- v1.4 使用 AI 对多种类型的消息进行读取，提取描述文字作为纯文本大模型的语料，支持纯文本数据库的导出
+- 研究仓库: [WeChat-v4-export-research](https://github.com/Ray0612/WeChat-v4-export-research)
+- 国内的朋友可以访问我的博客网站使用[github高速下载工具](https://blog.ray2.asia/tools/download-relay/)，将这个(release)网址复制进来高速下载 [Releases v1.2.0](https://github.com/Ray0612/WeChat-Export-Tool/releases)
 
-## 版本历史
+## ToDoList
 
-- **v1.0** (2026-06-11): 文字消息导出
-- **v1.2.0** (2026-07-15): 图片解密导出、多格式导出、日志系统、密钥持久化
+- 现在正在着手开发QQ聊天记录导出的开源工具，为之后充实语料库做基础，后续会把两个工具的仓库合并
+- v1.2.X 支持多种类型的消息的导出（图片✅️表情❌️表情包❌️视频❌️语音❌️）
+- v1.3 更美观的gui，更轻量的release
+- v1.4 使用ai对多种类型的消息进行读取，提取出描述文字作为纯文本大模型的语料，支持纯文本数据库的导出
+
+## v1.2.0
+
+- 新增导出消息类型：图片（只有HTML、PDF格式支持）
+- 新增填充已知密钥的入口，新增自动记录和填充之前的密钥无需重复获取
+- 新增日志记录系统，log格式记录崩溃、图片处理、导出等操作记录
+- 修改首页确定工作目录
+- 修复加载信息上限为2000，现在的上限是数据库中会话消息总数
+- 修复因检测微信子进程而可能出现的卡顿
+- 优化PDF的长文本加载的页面截断等显示错误（长文本直接显示文字，不放在气泡中）
+
+## v1.1
+
+- 新增导出格式：PDF，CSV，Excel，HTML（最美观，支持搜索）
+- 修复启动时检测企业微信作为微信进程的bug
+- 修复关闭程序时临时文件清理不完全
+- 修复txt格式中时间戳显示错误
+
+## v1.0.0
+
+- 支持本地导出微信聊天记录
+- 支持导出文字聊天记录
+- 支持以txt和json格式导出
+- 支持搜索联系人指定会话导出
