@@ -26,3 +26,7 @@ resources/bin/
 迭代/
 *.zip
 research/scripts/decrypt.exe
+
+# 本地构建依赖 / 备份（不入库）
+vendor/
+backup/

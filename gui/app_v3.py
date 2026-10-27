@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""微信聊天记录本地导出工具 v1.2.0"""
+"""微信聊天记录本地导出工具 v1.2.1"""
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import os, sys, threading, time, datetime, json, ctypes, shutil, re
@@ -71,7 +71,7 @@ def find_xwechat_dirs():
 class App:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("微信聊天记录本地导出工具 v1.2.0")
+        self.root.title("微信聊天记录本地导出工具 v1.2.1")
         self.root.geometry("1100x750")
         self._set_icon()
         self.key = _LOADED_KEY or None
@@ -121,7 +121,7 @@ class App:
         f = ttk.Frame(self.root, padding=40)
         f.pack(fill=tk.BOTH, expand=True)
         ttk.Label(f, text="微信聊天记录本地导出工具", font=("", 20)).pack()
-        ttk.Label(f, text="v1.2.0", font=("", 10)).pack(pady=(0, 20))
+        ttk.Label(f, text="v1.2.1", font=("", 10)).pack(pady=(0, 20))
 
         dir_f = ttk.LabelFrame(f, text="微信数据目录", padding=10)
         dir_f.pack(fill=tk.X, pady=10)

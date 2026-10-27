@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-路线 A — WeFlow 原理 Python 实现
+路线 A — 参考实现原理 Python 版本
 流程: 关微信 → 注入 hook → 开微信登录 → 自动捕获 key → 解密数据库 → 导出
 """
 import ctypes, json, os, sys, time, subprocess
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = r'C:\Users\OK\Desktop\wechat_v4_export_research'
-WX_KEY = r'C:\Users\OK\AppData\Local\Programs\WeFlow\resources\resources\key\win32\x64\wx_key.dll'
-WCDB_DIR = r'C:\Users\OK\AppData\Local\Programs\WeFlow\resources\resources\wcdb\win32\x64'
+_RESEARCH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+WX_KEY = os.path.join(_RESEARCH, 'tools', 'wx_key', 'assets', 'dll', 'wx_key.dll')
+WCDB_DIR = os.path.join(_RESEARCH, 'tools', 'assets', 'dll')
 OUT = r'C:\Users\OK\Desktop\wx_export'
 os.makedirs(OUT, exist_ok=True)
 
 # ═══════════════════════════════════════
-# 第一步: 提取 Key (仿 WeFlow)
+# 第一步: 提取 Key (参考实现)
 # ═══════════════════════════════════════
 
 def extract_key():
@@ -64,7 +65,7 @@ def extract_key():
         time.sleep(1)
 
 # ═══════════════════════════════════════
-# 第二步: 解密数据库 (仿 WeFlow WCDB API)
+# 第二步: 解密数据库 (参考 WCDB API)
 # ═══════════════════════════════════════
 
 class WCDB:

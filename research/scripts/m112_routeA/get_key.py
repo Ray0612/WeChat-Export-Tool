@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-wx_key.dll key 提取器 — 仿 WeFlow 实现
+wx_key.dll key 提取器 — 参考实现
 管理员权限 + 找微信进程 + InitializeHook + PollKeyData
 """
 import ctypes, sys, os, time, subprocess, json
@@ -44,9 +44,7 @@ print('\n[2] 加载 wx_key.dll...')
 
 # 找 DLL 路径
 dll_candidates = [
-    os.path.join(os.path.dirname(__file__), '..', '..', 'tools', 'weflow', 'source', 'enjoyZhou-WeFlow-70aff53', 'resources', 'key', 'win32', 'x64', 'wx_key.dll'),
     os.path.join(os.path.dirname(__file__), '..', '..', 'tools', 'wx_key', 'assets', 'dll', 'wx_key.dll'),
-    r'C:\Users\OK\AppData\Local\Programs\WeFlow\resources\resources\key\win32\x64\wx_key.dll',
 ]
 
 dll_path = None

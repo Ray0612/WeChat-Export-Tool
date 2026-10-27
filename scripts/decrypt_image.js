@@ -7,19 +7,17 @@ const { execSync, execFileSync } = require('child_process');
 const SCRIPT_DIR = __dirname;
 const PROJECT_DIR = path.resolve(SCRIPT_DIR, '..');
 
-// 资源路径: 优先本地打包资源，其次 WeFlow 安装目录
+// 资源路径: 仅使用项目内本地资源
 const NATIVE_CANDIDATES = [
-    path.join(PROJECT_DIR, 'resources', 'native', 'weflow-image-native-win32-x64.node'),
-    'C:/Users/OK/AppData/Local/Programs/WeFlow/resources/resources/wedecrypt/win32/x64/weflow-image-native-win32-x64.node',
+    path.join(PROJECT_DIR, 'resources', 'native', 'wx-image-native-win32-x64.node'),
 ];
 const DLL_CANDIDATES = [
     path.join(PROJECT_DIR, 'dll', 'wx_key.dll'),
     path.join(PROJECT_DIR, 'APP', 'WeChatExport', 'dll', 'wx_key.dll'),
-    'C:/Users/OK/AppData/Local/Programs/WeFlow/resources/resources/key/win32/x64/wx_key.dll',
+    path.join(PROJECT_DIR, 'vendor', 'key', 'win32', 'x64', 'wx_key.dll'),
 ];
 const FFMPEG_CANDIDATES = [
     path.join(PROJECT_DIR, 'resources', 'bin', 'ffmpeg.exe'),
-    'C:/Users/OK/AppData/Local/Programs/WeFlow/resources/app.asar.unpacked/node_modules/ffmpeg-static/ffmpeg.exe',
 ];
 
 const filepath = process.argv[2];

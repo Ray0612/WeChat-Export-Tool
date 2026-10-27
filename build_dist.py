@@ -87,23 +87,36 @@ if os.path.exists(KOFI_NATIVE):
     shutil.copytree(KOFI_NATIVE, dst)
     print('  [OK] @koromix/koffi-win32-x64')
 
-# WCDB DLLs
-WCDB_SRC = r'C:\Users\OK\AppData\Local\Programs\WeFlow\resources\resources\wcdb\win32\x64'
+def _first_dir(*paths):
+    for p in paths:
+        if os.path.isdir(p):
+            return p
+    return paths[0]
+
+# WCDB DLLs（优先 vendor，其次本地 APP 目录）
+WCDB_SRC = _first_dir(os.path.join(ROOT, 'vendor', 'wcdb', 'win32', 'x64'),
+                      os.path.join(ROOT, 'APP', 'WeChatExport', 'dll'))
 for f in ['WCDB.dll', 'wcdb_api.dll', 'SDL2.dll']:
     src = os.path.join(WCDB_SRC, f)
     if os.path.exists(src):
         shutil.copy(src, os.path.join(DIST, 'dll'))
         print(f'  [OK] {f}')
+    else:
+        print(f'  [MISS] {f} ({WCDB_SRC})')
 
-# wx_key.dll
-KEY_SRC = r'C:\Users\OK\AppData\Local\Programs\WeFlow\resources\resources\key\win32\x64'
+# wx_key.dll（优先 vendor，其次本地 APP 目录）
+KEY_SRC = _first_dir(os.path.join(ROOT, 'vendor', 'key', 'win32', 'x64'),
+                     os.path.join(ROOT, 'APP', 'WeChatExport', 'dll'))
+if not os.path.isdir(KEY_SRC):
+    raise SystemExit(f'缺少 DLL 目录: {KEY_SRC}')
 for f in os.listdir(KEY_SRC):
     if f.endswith('.dll'):
         shutil.copy(os.path.join(KEY_SRC, f), os.path.join(DIST, 'dll'))
         print(f'  [OK] {f}')
 
-# VC++ 运行时 DLLs
-RUNTIME_SRC = r'C:\Users\OK\AppData\Local\Programs\WeFlow'
+# VC++ 运行时 DLLs（优先 vendor，其次本地 APP 目录）
+RUNTIME_SRC = _first_dir(os.path.join(ROOT, 'vendor', 'runtime'),
+                         os.path.join(ROOT, 'APP', 'WeChatExport', 'runtime'))
 for f in ['msvcp140.dll', 'msvcp140_1.dll', 'vcruntime140.dll', 'vcruntime140_1.dll']:
     src = os.path.join(RUNTIME_SRC, f)
     if os.path.exists(src):

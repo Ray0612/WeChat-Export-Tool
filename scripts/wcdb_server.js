@@ -26,14 +26,17 @@ if (!key || key.length !== 64) { console.error('BAD_KEY'); process.exit(1); }
 
 // ── 初始化 WCDB ──
 let lib = null;
+let legacy = false;   // 旧版 wcdb_api.dll：无 InitProtection，需要扁平化 DB 目录
 try {
     koffi.load(path.join(DLL, 'WCDB.dll'));
     koffi.load(path.join(DLL, 'SDL2.dll'));
     const _lib = koffi.load(path.join(DLL, 'wcdb_api.dll'));
-    const ip = _lib.func('int32 InitProtection(const char* path)');
+    let ip = null;
+    try { ip = _lib.func('int32 InitProtection(const char* path)'); } catch(e) { legacy = true; }
     const wi = _lib.func('int32 wcdb_init()');
-    ip(DLL);
-    if (wi() !== 0) { console.error('INIT_FAIL'); process.exit(1); }
+    if (ip) { try { ip(DLL); } catch(e) {} }
+    const rc = wi();
+    if (rc !== 0) { console.error('INIT_FAIL:' + rc); process.exit(1); }
     lib = _lib;
 } catch(e) {
     console.error('DLL_LOAD_FAIL:' + e.message.substring(0, 80));
@@ -75,6 +78,60 @@ if (sessionDb) {
     }
 }
 
+// ── 旧 DLL 兼容：把 session/message/contact 复制到一个纯 ASCII 的扁平目录 ──
+// 旧版 wcdb_api.dll 只在 session.db 同目录找 message_*.db，且路径含中文会失败
+function isAscii(s) { return /^[\x00-\x7F]*$/.test(s); }
+
+function pickFlatDir() {
+    const suffix = String(process.pid);
+    const cands = [
+        process.env.TEMP ? path.join(process.env.TEMP, 'wx_export_flat_' + suffix) : '',
+        process.env.LOCALAPPDATA ? path.join(process.env.LOCALAPPDATA, 'wx_export_flat_' + suffix) : '',
+        'C:\\wx_export_flat_' + suffix,
+        'D:\\wx_export_flat_' + suffix,
+    ].filter(Boolean);
+    for (const c of cands) if (isAscii(c)) return c;
+    throw new Error('找不到纯 ASCII 的暂存目录');
+}
+
+let FLAT_DIR = '';
+
+function stageFlat(accDir) {
+    const dbStorage = path.join(accDir, 'db_storage');
+    if (!fs.existsSync(dbStorage)) throw new Error('db_storage 不存在: ' + dbStorage);
+    const flat = pickFlatDir();
+    FLAT_DIR = flat;
+    fs.rmSync(flat, { recursive: true, force: true });
+    fs.mkdirSync(flat, { recursive: true });
+
+    const pairs = [
+        [path.join(dbStorage, 'session', 'session.db'), path.join(flat, 'session.db')],
+        [path.join(dbStorage, 'session', 'session.db-wal'), path.join(flat, 'session.db-wal')],
+        [path.join(dbStorage, 'session', 'session.db-shm'), path.join(flat, 'session.db-shm')],
+        [path.join(dbStorage, 'contact', 'contact.db'), path.join(flat, 'contact.db')],
+    ];
+    for (const [s, d] of pairs) if (fs.existsSync(s)) fs.copyFileSync(s, d);
+
+    const msgDir = path.join(dbStorage, 'message');
+    if (fs.existsSync(msgDir)) {
+        for (const f of fs.readdirSync(msgDir)) {
+            if (/^message_.*\.db$/i.test(f)) fs.copyFileSync(path.join(msgDir, f), path.join(flat, f));
+        }
+    }
+    return path.join(flat, 'session.db');
+}
+
+let openDb = sessionDb;
+if (legacy) {
+    try {
+        openDb = stageFlat(accountDir);
+        console.error('STAGING_OK:' + openDb);
+    } catch(e) {
+        console.error('STAGING_FAIL:' + e.message);
+        process.exit(1);
+    }
+}
+
 // ── 绑定函数 ──
 const oa = lib.func('int32 wcdb_open_account(const char* path, const char* key, _Out_ int64* h)');
 const ca = lib.func('int32 wcdb_close_account(int64 h)');
@@ -84,13 +141,16 @@ const gc = lib.func('int32 wcdb_get_message_count(int64 h, const char* username,
 const dn = lib.func('int32 wcdb_get_display_names(int64 h, const char* json, _Out_ void** out)');
 const fs2 = lib.func('void wcdb_free_string(void* p)');
 
-// v1.2: 媒体相关 API
-const sm = lib.func('int32 wcdb_scan_media_stream(int64 h, const char* sessionIdsJson, int32 mediaType, int64 begin, int64 end, int32 limit, int32 offset, _Out_ void** outJson, _Out_ int32* outHasMore)');
-const ri = lib.func('int32 wcdb_resolve_image_hardlink(int64 h, const char* md5, const char* accountDir, _Out_ void** outJson)');
-const rib = lib.func('int32 wcdb_resolve_image_hardlink_batch(int64 h, const char* requestsJson, _Out_ void** outJson)');
+function optFunc(sig) {
+    try { return lib.func(sig); } catch(e) { return null; }
+}
+// v1.2: 媒体相关 API（旧 DLL 没有，缺失时降级到文件系统搜索）
+const sm = optFunc('int32 wcdb_scan_media_stream(int64 h, const char* sessionIdsJson, int32 mediaType, int64 begin, int64 end, int32 limit, int32 offset, _Out_ void** outJson, _Out_ int32* outHasMore)');
+const ri = optFunc('int32 wcdb_resolve_image_hardlink(int64 h, const char* md5, const char* accountDir, _Out_ void** outJson)');
+const rib = optFunc('int32 wcdb_resolve_image_hardlink_batch(int64 h, const char* requestsJson, _Out_ void** outJson)');
 
 const h = [BigInt(0)];
-if (oa(sessionDb, key, h) !== 0) { console.error('OPEN_FAIL'); process.exit(1); }
+if (oa(openDb, key, h) !== 0) { console.error('OPEN_FAIL:' + openDb); process.exit(1); }
 
 // ── HTTP 服务 ──
 http.createServer((req, res) => {
@@ -154,6 +214,7 @@ http.createServer((req, res) => {
 
         // v1.2: 媒体扫描
         if (a === 'scan_media') {
+            if (!sm) { res.end(JSON.stringify({ messages: [], has_more: false })); return; }
             const outJson = [null]; const outHasMore = [0];
             sm(h[0], JSON.stringify([p[1]]), parseInt(p[2]||'1'), parseInt(p[3]||'0'), parseInt(p[4]||'4102444800'), parseInt(p[5]||'200'), parseInt(p[6]||'0'), outJson, outHasMore);
             const r = {messages: outJson[0] ? JSON.parse(koffi.decode(outJson[0], 'char', -1)) : [], has_more: outHasMore[0] !== 0};
@@ -163,6 +224,7 @@ http.createServer((req, res) => {
 
         // v1.2: 图片路径解析
         if (a === 'resolve_image') {
+            if (!ri) { res.end('{}'); return; }
             const out = [null];
             const rv = ri(h[0], p[1], accountDir, out);
             const raw = out[0] ? koffi.decode(out[0], 'char', -1) : '{}';
@@ -172,6 +234,7 @@ http.createServer((req, res) => {
 
         // v1.2: 批量图片路径解析
         if (a === 'resolve_image_batch') {
+            if (!rib) { res.end('[]'); return; }
             let body = '';
             req.on('data', c => body += c);
             req.on('end', () => {
@@ -185,10 +248,19 @@ http.createServer((req, res) => {
     } catch(e) { res.end(JSON.stringify({error: e.message})); }
 }).listen(port, () => process.stdout.write('READY\n'));
 
+// 清理临时扁平目录（仅当本进程创建过）
+function cleanupFlat() {
+    if (!FLAT_DIR) return;
+    try { fs.rmSync(FLAT_DIR, { recursive: true, force: true }); } catch(e) {}
+}
+
 // 优雅退出: 父进程断开时自动退出
 process.on('uncaughtException', (err) => {
     if (err.code === 'EPIPE' || err.message.includes('EPIPE')) return;
     console.error('UNCAUGHT:', err.message);
 });
+process.on('exit', cleanupFlat);
+process.on('SIGTERM', () => { cleanupFlat(); process.exit(0); });
+process.on('SIGINT', () => { cleanupFlat(); process.exit(0); });
 process.stdout.on('error', () => process.exit(0));
 process.stderr.on('error', () => {});
