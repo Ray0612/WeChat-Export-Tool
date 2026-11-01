@@ -20,7 +20,8 @@ class WCDBClient:
             if os.path.exists(c): return c
         return shutil.which('node') or shutil.which('node.exe') or ''
 
-    def start(self, key, data_dir='', timeout=45):
+    def start(self, key, data_dir='', timeout=180):
+        # 首次连接需要复制 300MB+ 的数据库到暂存目录，慢盘/大库可能超过 45 秒
         base = os.path.dirname(_script_dir())
         server = os.path.join(_script_dir(), 'wcdb_server.js')
         runtime = self._find_runtime(base)
@@ -58,7 +59,7 @@ class WCDBClient:
         out = ''
         try: out = '\n' + self.proc.stdout.read(1000).decode('utf-8', errors='replace').strip() if self.proc.stdout else ''
         except: pass
-        raise RuntimeError(f'WCDB 启动超时{out}')
+        raise RuntimeError(f'WCDB 启动超时（{timeout} 秒）{out}')
 
     def _get(self, path):
         c = http.client.HTTPConnection('127.0.0.1', self.port, timeout=120)
